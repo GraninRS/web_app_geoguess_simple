@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+  <div class="col-md-8">
+    <h2>Раунд {{ round_number }} / 10</h2>
+
+    {% if map_url %}
+      <img src="{{ map_url }}" class="img-fluid rounded shadow mb-3" style="width:100%;">
+    {% endif %}
+
+    {% if last_result %}
+      <div class="alert {% if last_result.correct %}alert-success{% else %}alert-danger{% endif %}">
+        {% if last_result.guess_type == 'city' %}
+           <strong>Город угадан!</strong> {{ last_result.city }}. +1.0 очка
+        {% elif last_result.guess_type == 'country' %}
+           <strong>Страна угадана!</strong> {{ last_result.country }}. Город: {{ last_result.city }}. +0.5 очка
+        {% elif last_result.guess_type == 'continent' %}
+           <strong>Континент угадан!</strong> {{ last_result.continent }}. Город: {{ last_result.city }}, {{ last_result.country }}. +0.25 очка
+        {% else %}
+          ❌ <strong>Неверно.</strong> {{ last_result.city }}, {{ last_result.country }}, {{ last_result.continent }}. +0 очков
+        {% endif %}
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5>📝 Информация</h5>
+          <p>{{ last_result.info }}</p>
+          {% if last_result.population %}
+            <p><strong>👥 Население:</strong> {{ last_result.population }}</p>
+          {% endif %}
+          <p><strong>🌍</strong> {{ last_result.continent }}, {{ last_result.country }}</p>
+        </div>
+      </div>
+
+      <a href="{{ url_for('next_round') }}" class="btn btn-primary btn-lg">Далее →</a>
+    {% else %}
+      <form method="POST" action="{{ url_for('guess') }}">
+        <div class="mb-3">
+          <label for="guess" class="form-label">Что это за место?</label>
+          <input type="text" name="guess" id="guess" class="form-control form-control-lg"
+                 placeholder="Город, страна или континент" required autofocus>
+          <div class="form-text">
+            🏙️ Город = <strong>1.0</strong> |
+            🗺️ Страна = <strong>0.5</strong> |
+            🌍 Континент = <strong>0.25</strong>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-success btn-lg">Проверить</button>
+      </form>
+    {% endif %}
+  </div>
+
+  <div class="col-md-4">
+    <div class="card mb-3">
+      <div class="card-body text-center">
+        <h3>Счёт</h3>
+        <h1 class="display-4">{{ "%.2f"|format(session.get('game', {}).get('score', 0)) }}</h1>
+      </div>
+    </div>
+
+    {% if city_info and not last_result %}
+    <div class="card">
+      <div class="card-body">
+        <h5> Подсказка</h5>
+        <p>{{ city_info }}</p>
+        <small class="text-muted">Название города скрыто</small>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="card mt-3">
+      <div class="card-body">
+        <h5>Правила</h5>
+        <p>🏙️ Город = 1.0 очка</p>
+        <p>🗺️ Страна = 0.5 очка</p>
+        <p>🌍 Континент = 0.25 очка</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

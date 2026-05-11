@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Игра окончена!</h2>
+<p>Итоговый счёт: <strong>{{ "%.2f"|format(final_score) }}</strong> из 10.</p>
+<a href="{{ url_for('start_game') }}" class="btn btn-primary">Сыграть снова</a>
+<a href="{{ url_for('profile') }}" class="btn btn-secondary">Профиль</a>
+{% endblock %}

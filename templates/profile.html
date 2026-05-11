@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+  <div class="col-md-4 text-center">
+    <img src="{{ url_for('static', filename='avatars/' + user.avatar) }}"
+         class="rounded-circle img-thumbnail mb-3"
+         style="width:200px; height:200px; object-fit:cover;">
+
+    <form method="POST" action="{{ url_for('upload_avatar') }}" enctype="multipart/form-data">
+      <input type="file" name="avatar" class="form-control mb-2" accept="image/*">
+      <button type="submit" class="btn btn-outline-primary btn-sm">Обновить фото</button>
+    </form>
+  </div>
+  <div class="col-md-8">
+    <h2>{{ user.username }}</h2>
+    <h4>🏆 Лучший результат: <strong>{{ "%.2f"|format(user.best_score) }}</strong></h4>
+  </div>
+</div>
+
+<hr>
+
+{% if chart %}
+<h4> Динамика игр</h4>
+<img src="data:image/png;base64,{{ chart }}" class="img-fluid rounded shadow">
+{% else %}
+<div class="alert alert-info">Нужно сыграть минимум 2 игры для построения графика</div>
+{% endif %}
+
+<h4 class="mt-4">Последние игры</h4>
+<table class="table table-sm">
+  <thead><tr><th>Дата</th><th>Счёт</th></tr></thead>
+  <tbody>
+    {% for r in results %}
+    <tr>
+      <td>{{ r.date_played.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>{{ "%.2f"|format(r.score) }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

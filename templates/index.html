@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>GeoGuess — угадай город по карте</h1>
+<p>10 раундов, подсказки, рекорды. Вводи названия городов на русском.</p>
+{% if current_user.is_authenticated %}
+  <a href="{{ url_for('start_game') }}" class="btn btn-success btn-lg">Начать игру</a>
+{% else %}
+  <a href="{{ url_for('login') }}" class="btn btn-primary">Войти</a>
+{% endif %}
+{% endblock %}
